@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 function TicTacToe() {
@@ -59,9 +58,9 @@ function Board() {
   useEffect(() => {
     if(winner) {
       if(winner === "X") {
-        setXWins(xWins + 1);
+        setXWins((prev) => prev + 1);
       } else if(winner === "O"){
-        setOWins(oWins + 1);
+        setOWins((prev) => prev + 1);
       }
     }
   }, [winner]);
