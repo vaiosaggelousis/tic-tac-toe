@@ -19,11 +19,35 @@ function Square(props) {
   );
 }
 
-function Scoreboard({ xWins, oWins }) {
+function Scoreboard({ xWins, oWins, xIsNext, winner }) {
   return(
     <div className="scoreboard">
-      <div>X Wins: {xWins}</div>
-      <div>O Wins: {oWins}</div>
+      <div className="scoreboard-heading">
+        <span className="eyebrow">MATCH SCORE</span>
+        <h2>Scoreboard</h2>
+      </div>
+      <div className="score-cards">
+        <div className={`score-card score-card-x ${winner === "X" ? "is-winner" : ""}`}>
+          <span className="player-mark">X</span>
+          <div>
+            <span className="player-label">Player one</span>
+            <strong className="score-value">{xWins}</strong>
+          </div>
+          <span className="score-caption">wins</span>
+        </div>
+        <div className={`score-card score-card-o ${winner === "O" ? "is-winner" : ""}`}>
+          <span className="player-mark">O</span>
+          <div>
+            <span className="player-label">Player two</span>
+            <strong className="score-value">{oWins}</strong>
+          </div>
+          <span className="score-caption">wins</span>
+        </div>
+      </div>
+      <div className="turn-indicator">
+        <span className={`turn-dot turn-dot-${winner || (xIsNext ? "x" : "o")}`} />
+        {winner === "None" ? "Round draw" : winner ? `${winner} takes the round` : `${xIsNext ? "X" : "O"}'s turn`}
+      </div>
     </div>
   );
 }
@@ -99,31 +123,33 @@ function Board() {
   }
 
   return(
-    <div>
-      <div className="status">{status}</div>
-      {[0, 1, 2].map((row) => (
-        <div className="board-row" key={row}>
-          {[0, 1, 2].map((col) => {
-            const index = 3 * row + col;
-            return(
-              <Square
-                value={squares[index]}
-                onClick={() => handleClick(index)}
-                key={index}
-              />
-            );
-          })}
+    <>
+      <div className="board-panel">
+        <div className="status">{status}</div>
+        {[0, 1, 2].map((row) => (
+          <div className="board-row" key={row}>
+            {[0, 1, 2].map((col) => {
+              const index = 3 * row + col;
+              return(
+                <Square
+                  value={squares[index]}
+                  onClick={() => handleClick(index)}
+                  key={index}
+                />
+              );
+            })}
+          </div>
+        ))}
+        <div className="reset-container">
+          {(winner || !squares.includes(null)) && (
+            <button className="reset" onClick={reset}>
+              Reset
+            </button>
+          )}
         </div>
-      ))}
-      <Scoreboard xWins={xWins} oWins={oWins} />
-      <div className="reset-container">
-        {(winner || !squares.includes(null)) && (
-          <button className="reset" onClick={reset}>
-            Reset
-          </button>
-        )}
       </div>
-    </div>
+      <Scoreboard xWins={xWins} oWins={oWins} xIsNext={xIsNext} winner={winner} />
+    </>
   );
 }
 
